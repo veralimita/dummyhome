@@ -142,9 +142,11 @@ function writeToGoogle(auth, spreadsheetId, body, time) {
 function getSpreadsheets(mac, callback) {
 	var client = redis.createClient();
 	client.hgetall('dummyhome:sensors:' + mac + ':temperature', function (err, object) {
+		console.log('found');
+		console.log(object);
 		sheets.spreadsheets.get({
 			auth: auth,
-			spreadsheetId: object.spreadsheetId
+			spreadsheetId: object && object.spreadsheetId
 		}, function (err, response) {
 			if (err) {
 				var request = {
@@ -207,6 +209,7 @@ router.post('/power', function (req, res) {
 app.post('/meteo', function (req, res) {
 	var client = redis.createClient();
 	var body = req.body;
+	console.log(req.body);
 	getSpreadsheets(req.body.mac || "undefined", function (err, id) {
 		client.hmset(["dummyhome:sensors:" + body.mac + ":temperature", "spreadsheetId", id, "temp", body.temperature.toString(), "datetime", moment().toString()], function (err, res) {
 			console.log('set reddis')
