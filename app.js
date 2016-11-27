@@ -12,6 +12,7 @@ var google = require('googleapis');
 var googleAuth = require('google-auth-library');
 var redis = require('redis');
 
+var sheets = google.sheets('v4');
 // If modifying these scopes, delete your previously saved credentials
 // at ~/.credentials/sheets.googleapis.com-nodejs-quickstart.json
 var SCOPES = ['https://www.googleapis.com/auth/spreadsheets'];
@@ -106,38 +107,82 @@ function storeToken(token) {
 	console.log('Token stored to ' + TOKEN_PATH);
 }
 
-/**
- * Print the names and majors of students in a sample spreadsheet:
- * https://docs.google.com/spreadsheets/d/1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms/edit
- */
-function writeToGoogle(auth, temp, time) {
-	var sheets = google.sheets('v4');
+function writeToGoogle(auth, spreadsheetId, body, time) {
 	sheets.spreadsheets.values.append({
 		auth: auth,
-		spreadsheetId: '1HTinSOnt8pTWjHZ3mgrh4pynUO2WER3M7oDuUjUw2M4',
-		range: 'A1:B',
+		spreadsheetId: spreadsheetId,
+		range: 'A2:F',
 		valueInputOption: "USER_ENTERED",
 		resource: {
 			majorDimension: "ROWS",
 			values: [
-				[time, temp]
+				[time, body.temperature, body.humidity, body.heatIndex, body.voltage, body.mac]
 			]
 		}
+	}, function (err, resp) {
+		console.log('append: ', err, resp);
 	});
 	sheets.spreadsheets.values.update({
 		auth: auth,
-		spreadsheetId: '1HTinSOnt8pTWjHZ3mgrh4pynUO2WER3M7oDuUjUw2M4',
-		range: 'C2',
+		spreadsheetId: spreadsheetId,
+		range: 'G1:G2',
 		valueInputOption: "USER_ENTERED",
 		resource: {
 			majorDimension: "ROWS",
 			values: [
-				[temp]
+				[time],
+				[body.temperature]
 			]
 		}
+	}, function (err, resp) {
+		console.log('update: ', err, resp);
 	});
 }
 
+function getSpreadsheets(mac, callback) {
+	var client = redis.createClient();
+	client.hgetall('dummyhome:sensors:' + mac + ':temperature', function (err, object) {
+		sheets.spreadsheets.get({
+			auth: auth,
+			spreadsheetId: object.spreadsheetId
+		}, function (err, response) {
+			if (err) {
+				var request = {
+					auth: auth,
+					resource: {
+						properties: {
+							title: mac
+						},
+						sheets: [
+							{
+								properties: {
+									title: 'Data',
+									gridProperties: {
+										columnCount: 7
+									}
+								}
+							}
+						]
+					}
+				};
+				sheets.spreadsheets.create(request, function (err, spreadsheet) {
+					client.quit();
+					if (err) {
+						callback(err)
+
+					}
+					console.log('new one')
+					callback(null, spreadsheet.spreadsheetId)
+				});
+			}
+			else {
+				console.log('exists')
+				callback(null, object.spreadsheetId)
+			}
+		})
+
+	});
+}
 
 app.use(require('express-domain-middleware'));
 app.use(bodyParser.urlencoded({extended: true, parameterLimit: 5000}));
@@ -161,16 +206,21 @@ router.post('/power', function (req, res) {
 
 app.post('/meteo', function (req, res) {
 	var client = redis.createClient();
-	writeToGoogle(auth, req.body.temperature, moment().format('DD.MM.YYYY HH:mm:ss'));
-	client.hmset(["dummyhome:1:temperature", "temp", req.body.temperature.toString(), "datetime", moment().toString()], function (err, res) {
-
+	var body = req.body;
+	getSpreadsheets(req.body.mac || "undefined", function (err, id) {
+		client.hmset(["dummyhome:sensors:" + body.mac + ":temperature", "spreadsheetId", id, "temp", body.temperature.toString(), "datetime", moment().toString()], function (err, res) {
+			console.log('set reddis')
+			writeToGoogle(auth, id, body, moment().format('DD.MM.YYYY HH:mm:ss'));
+		});
+		client.quit();
 	});
-	client.quit();
+
+
 });
 
 app.get('/stats', function (req, res) {
 	var client = redis.createClient();
-	client.hgetall('dummyhome:1:temperature', function (err, object) {
+	client.hgetall('dummyhome:sensors:1:temperature', function (err, object) {
 		res.send(object);
 		client.quit();
 	});
