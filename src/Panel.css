@@ -10,6 +10,7 @@
     padding: 8px;
 }
 
+
 .Panel .Panel-header:after{
     content: " "; /* Older browser do not support empty content */
     visibility: hidden;
@@ -23,5 +24,14 @@
     display: inline-block;
     width: 80px;
     height: 80px;
+}
+
+.Panel .Panel-header .Panel-header-title {
+    font-size: large;
+    display: block;
+    margin-left: 96px;
+    text-align: left;
+    vertical-align: middle;
+    margin-bottom: 8px;
 }
 

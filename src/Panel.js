@@ -13,6 +13,7 @@ class Panel extends Component {
             <div className="Panel">
                 <div className="Panel-header">
                     <img src={icon} role="presentation" />
+                    <div className="Panel-header-title">I'm so so sooooo sorry about this</div>
                 </div>
                 <div className="Panel-body">
                     {this.state.message}
