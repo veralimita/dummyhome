@@ -6,12 +6,21 @@
     background-color: white;
 }
 
-.Panel .Panel-body {
+.Panel .Panel-body, .Panel .Panel-header {
     padding: 8px;
 }
 
-.Panel .Panel-body img {
+.Panel .Panel-header:after{
+    content: " "; /* Older browser do not support empty content */
+    visibility: hidden;
+    display: block;
+    height: 0;
+    clear: both;
+}
+
+.Panel .Panel-header img {
+    float: left;
     display: inline-block;
-    height: 80px;
+    width: 72px;
 }
 
