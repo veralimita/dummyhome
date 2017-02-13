@@ -3,39 +3,35 @@ import Room from './Room.js';
 import Panel from './Panel.js';
 import logo from './icons/HXPNG/HC11.png';
 import './App.css';
-import rooms from '../public/rooms.json';
 
 class App extends Component {
+
+    emptyRooms = (<Panel iconId="05" message="I have nothing to show"/>);
+    searchingPanel = (<Panel iconId="01" message="Abracadabra"/>);
+
     constructor() {
         super();
-        this.state = {rooms: []};
-        console.log(this.state.rooms.length);
-
-        this.rooms = ( <ul>
-                {rooms.map((room) =>
-                    <li key={room.id}>
-                        <Room room={room}/>
-                    </li>
-                )}
-            </ul>
-        )
+        this.state = {rooms: <div></div>, roomsCount: 0, inSearch: true};
     }
-
-
-    emptyRooms = (<Panel iconId="10" message="I have nothing to show"/>);
 
     componentDidMount() {
         window.api.get((err, resp) => {
-            console.log('hired');
+            if (resp) {
+                let _ = JSON.parse(resp);
+                this.setState({
+                    inSearch: false,
+                    roomsCount: _.length,
+                    rooms: (<ul>
+                        {_.map((room, index) =>
+                            <li key={index}>
+                                <Room room={room}/>
+                            </li>
+                        )}
+                    </ul>)
+                }, () => {
+                });
+            }
         });
-        return;
-        this.setState({
-            // route components are rendered with useful information, like URL params
-            rooms: rooms
-        }, () => {
-            console.log(this.state.rooms.length);
-        });
-
     }
 
     render() {
@@ -45,8 +41,7 @@ class App extends Component {
                     <img src={logo} className="App-logo" alt="logo"/>
                     <h2>Welcome to dummy-home web</h2>
                 </div>
-
-                {this.state.rooms.length ? this.rooms : this.emptyRooms}
+                {this.state.inSearch ? this.searchingPanel : (this.state.roomsCount ? this.state.rooms : this.emptyRooms)}
             </div>
         );
     }
