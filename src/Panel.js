@@ -8,12 +8,14 @@ class Panel extends Component {
         this.state = {icon: `U${props.iconId}.png`, message: props.message};
     }
 
-
     render() {
         return (
             <div className="Panel">
+                <div className="Panel-header">
+                    <img src={icon} role="presentation" />
+                    <div className="Panel-header-title">I'm so so sooooo sorry about this</div>
+                </div>
                 <div className="Panel-body">
-                    <img src={icon}/>
                     {this.state.message}
                 </div>
             </div>

@@ -5,7 +5,6 @@ import logo from './icons/HXPNG/HC11.png';
 import './App.css';
 import rooms from '../public/rooms.json';
 
-
 class App extends Component {
     constructor() {
         super();
@@ -23,13 +22,17 @@ class App extends Component {
     }
 
 
-    emptyRooms = (<Panel iconId="10" message="I have nothing to show"/>)
+    emptyRooms = (<Panel iconId="10" message="I have nothing to show"/>);
 
     componentDidMount() {
+        window.api.get((err, resp) => {
+            console.log('hired');
+        });
+        return;
         this.setState({
             // route components are rendered with useful information, like URL params
             rooms: rooms
-        },() => {
+        }, () => {
             console.log(this.state.rooms.length);
         });
 
@@ -42,9 +45,7 @@ class App extends Component {
                     <img src={logo} className="App-logo" alt="logo"/>
                     <h2>Welcome to dummy-home web</h2>
                 </div>
-                <p className="App-intro">
-                    To get started, edit <code>src/App.js</code> and save to reload.
-                </p>
+
                 {this.state.rooms.length ? this.rooms : this.emptyRooms}
             </div>
         );
