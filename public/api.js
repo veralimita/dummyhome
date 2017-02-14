@@ -1,8 +1,8 @@
 window.api = (function () {
     let api = {
-        get: function (cb) {
+        get: function (url, cb) {
             var xhr = new XMLHttpRequest();
-            xhr.open("GET", "/api/stats", true);
+            xhr.open("GET", url, true);
             xhr.onload = function (e) {
                 if (xhr.readyState === 4) {
                     if (xhr.status === 200) {

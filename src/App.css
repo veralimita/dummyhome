@@ -1,19 +1,86 @@
 .App {
-  text-align: center;
-  padding: 0 16px;
+    text-align: center;
+    padding: 0 16px;
+}
+
+.App ul.Rooms-lis {
+    list-style-type: none;
 }
 
 .App-logo {
-  height: 120px;
+    height: 120px;
 }
 
 .App-header {
-  margin: 0 -16px 16px;
-  background-color: #FFD393;
-  padding: 16px;
-  color: white;
+    margin: 0 -16px 16px;
+    background-color: #FFD393;
+    padding: 16px;
+    color: white;
+}
+
+.App-header.App-header-loading {
+    background: linear-gradient(359deg, #ffd393, #f54f29);
+    background-size: 400% 400%;
+
+    -webkit-animation: header 3s ease infinite;
+    -moz-animation: header 3s ease infinite;
+    animation: header 3s ease infinite;
+}
+
+@-webkit-keyframes header {
+    0% {
+        background-position: 43% 0%
+    }
+    50% {
+        background-position: 58% 100%
+    }
+    100% {
+        background-position: 43% 0%
+    }
+}
+
+@-moz-keyframes header {
+    0% {
+        background-position: 43% 0%
+    }
+    50% {
+        background-position: 58% 100%
+    }
+    100% {
+        background-position: 43% 0%
+    }
+}
+
+@keyframes header {
+    0% {
+        background-position: 43% 0%
+    }
+    50% {
+        background-position: 58% 100%
+    }
+    100% {
+        background-position: 43% 0%
+    }
 }
 
 .App-intro {
-  font-size: large;
+    margin: 0 auto;
+    max-width: 960px;
+    position: relative;
 }
+
+.App-intro .App-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 100;
+    background-color: #ffd393;
+    opacity: 0.6;
+}
+
+.App-intro ul.Rooms-list {
+    list-style-type: none;
+}
+

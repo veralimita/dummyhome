@@ -2,16 +2,18 @@
     -webkit-box-shadow: 0 10px 6px -6px #bbbbbb;
     -moz-box-shadow: 0 10px 6px -6px #bbbbbb;
     box-shadow: 0 10px 6px -6px #bbbbbb;
-    border: 1px solid rgba(187,187,187,0.25);
+    border: 1px solid rgba(187, 187, 187, 0.25);
     background-color: white;
+    min-width: 400px;
+    margin-bottom: 20px;
 }
 
 .Panel .Panel-body, .Panel .Panel-header {
     padding: 8px;
+    text-align: left;
 }
 
-
-.Panel .Panel-header:after{
+.Panel .Panel-header:after {
     content: " "; /* Older browser do not support empty content */
     visibility: hidden;
     display: block;
@@ -24,6 +26,7 @@
     display: inline-block;
     width: 80px;
     height: 80px;
+    border: 1px solid #ffd393;
 }
 
 .Panel .Panel-header .Panel-header-title {
@@ -31,7 +34,15 @@
     display: block;
     margin-left: 96px;
     text-align: left;
-    vertical-align: middle;
-    margin-bottom: 8px;
+    word-break: break-all;
+}
+
+.Panel .Panel-header .Panel-header-subtitle {
+    font-size: 13px;
+    margin-left: 96px;
+    line-height: normal;
+    text-align: left;
+    color: #405952;
+    word-break: break-all;
 }
 
